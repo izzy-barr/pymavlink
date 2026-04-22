@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 '''
-connect as a client to two tcpip ports on localhost with mavlink packets.    pass them both directions, and show packets in human-readable format on-screen.
+connect as a client to a tcp and a websocket port with mavlink packets.    pass them both directions, and show packets in human-readable format on-screen.
+
+Modified by Isabella Barr (Nov 2025) from Peter Hall's version to incorporate the ip address into both arguments so it is not reliant on only the localhost.
 
 this is useful if
 * you have two SITL instances you want to connect to each other and see the comms.
@@ -20,16 +22,16 @@ from pymavlink import mavutil
 
 from argparse import ArgumentParser
 parser = ArgumentParser(description=__doc__)
-parser.add_argument("srcport", type=int)
-parser.add_argument("dstport", type=int)
+parser.add_argument("srcport")
+parser.add_argument("dstport")
 
 args = parser.parse_args()
 
-msrc = mavutil.mavlink_connection('tcp:localhost:{}'.format(args.srcport), planner_format=False,
+msrc = mavutil.mavlink_connection('tcp:{}'.format(args.srcport), planner_format=False,
                                   notimestamps=True,
                                   robust_parsing=True)
 
-mdst = mavutil.mavlink_connection('tcp:localhost:{}'.format(args.dstport), planner_format=False,
+mdst = mavutil.mavlink_connection('wsserver:{}'.format(args.dstport), planner_format=False,
                                   notimestamps=True,
                                   robust_parsing=True)
 
